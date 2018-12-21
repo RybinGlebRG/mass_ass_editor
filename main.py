@@ -1,5 +1,5 @@
 from Converter import Converter
 import sys
 
-converter=Converter.Converter()
-print(sys.argv[1])
+converter = Converter.Converter()
+converter.convert(sys.argv[1])

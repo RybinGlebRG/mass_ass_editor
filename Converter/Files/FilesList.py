@@ -31,9 +31,10 @@ class FilesList:
 
     def filter_by_number(self, lower, upper):
         filtered = FilesList()
-        # Should not filter by number if there is no number
+        lower = int(lower[0])
+        upper = int(upper[0])
         for file in self.filesList:
-            if file.number == number:
+            if lower <= file.number <= upper:
                 filtered.add(file)
         return filtered
 
@@ -46,7 +47,6 @@ class FilesList:
             if file.getSuffix() in suffixes:
                 filtered.add(file)
         return filtered
-
 
     def load(self, directories, suffixes, configuration, is_recursive=True):
         for directory in directories:

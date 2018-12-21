@@ -4,7 +4,8 @@ import shutil
 
 
 class FileOperations:
-
+    read_encoding = "utf-8-sig"
+    write_encoding = "utf-8-sig"
 
     @staticmethod
     def rename(oldName, newName):
@@ -50,9 +51,9 @@ class FileOperations:
         return os.path.abspath(path)
 
     @staticmethod
-    def readFile(path):
+    def readFile(path, encoding=read_encoding):
         lines = []
-        file = FileOperations.open_file(path)
+        file = FileOperations.open_file(path, "r", encoding=encoding)
         for line in file:
             lines.append(line)
 
@@ -63,10 +64,17 @@ class FileOperations:
         file.write(line + "\n")
 
     @staticmethod
-    def open_file(path, mode="a+"):
-        file = io.open(path, mode=mode, newline="\r\n", encoding="utf-8", errors="surrogateescape")
+    def open_file(path, mode="a+", encoding=write_encoding):
+        file = io.open(path, mode=mode, newline="\r\n", encoding=encoding, errors="surrogateescape")
         return file
 
     @staticmethod
     def close_file(file):
         file.close()
+
+    @staticmethod
+    def write_lines_to_file(path, lines, mode="w+", encoding=write_encoding):
+        file = FileOperations.open_file(path, mode, encoding)
+        for line in lines:
+            file.write(line + "\n")
+        FileOperations.close_file(file)
