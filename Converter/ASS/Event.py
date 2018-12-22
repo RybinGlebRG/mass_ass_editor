@@ -8,7 +8,10 @@ class Event:
         values = line.split(": ")[1].strip().split(",")
         counter = 0
         for header in headers:
-            self.data[header] = values[counter]
+            if header != "Text":
+                self.data[header] = values[counter]
+            else:
+                self.data[header] = "".join(values[counter:])
             counter += 1
 
     def get_value(self, header):

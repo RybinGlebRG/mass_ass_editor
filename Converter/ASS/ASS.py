@@ -11,10 +11,13 @@ class ASS:
         self.v4_styles = None
         self.events = None
         self.example_event = None
+        self.name = None
+        self.directory = None
 
-    def parse(self, file):
-        name = FileOperations.FileOperations.join(file.path, file.fileName)
-        lines = FileOperations.FileOperations.readFile(name)
+    def parse(self, file=None, lines=None):
+        if lines is None:
+            name = FileOperations.FileOperations.join(file.path, file.fileName)
+            lines = FileOperations.FileOperations.readFile(name)
         is_script_info = True
         is_v4_styles = False
         is_events = False
@@ -74,3 +77,23 @@ class ASS:
     def get_replaced_example_event(self):
         line = self.example_event.get_event()
         return line
+
+    def to_lines(self):
+        lines = []
+        script_info = self.get_script_info()
+        v4_styles = self.get_v4_styles()
+        events = self.get_events()
+        lines.append("[Script Info]")
+        for line in script_info:
+            lines.append(line)
+        lines.append("")
+        lines.append("[V4+ Styles]")
+        for line in v4_styles:
+            lines.append(line)
+        lines.append("")
+        lines.append("[Events]")
+        for line in events:
+            lines.append(line)
+        lines.append("")
+        lines.append("")
+        return lines

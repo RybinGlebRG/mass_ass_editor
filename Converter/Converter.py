@@ -22,22 +22,36 @@ class Converter:
         srt_dict = {}
         for file in files:
             srt = SRT()
-            #print(file.number)
+            # print(file.number)
             srt.parse(file)
             srt_dict[file.number] = srt
         examples = FilesList.FilesList()
-        examples.load(configuration.getValue("directory"), configuration.getValue("example_suffixes"), configuration,
+        examples.load(configuration.getValue("example_directory"), configuration.getValue("example_suffixes"),
+                      configuration,
                       False)
         ass = None
         for example in examples:
-            ass = ASS()
-            ass.parse(example)
-            break
+            if example.fileName in configuration.getValue("example_name"):
+                ass = ASS()
+                ass.parse(example)
+                break
 
         conversion = Conversion()
+        res_asses = []
         for file in files:
             conversion.set_file(file, srt_dict[file.number], ass)
-            lines = conversion.process()
-            path = FileOperations.FileOperations.join(configuration.getValue("directory")[0], "text.txt")
-            FileOperations.FileOperations.write_lines_to_file(path, lines,"a+")
+            res_ass = conversion.process()
+            res_ass.name = file.fileName[:-3] + "ass"
+            res_ass.directory = file.path
+            res_asses.append(res_ass)
+            # path = FileOperations.FileOperations.join(configuration.getValue("directory")[0], "text.txt")
+            # FileOperations.FileOperations.write_lines_to_file(path, lines, "a+")
+        path = FileOperations.FileOperations.join(configuration.getValue("directory")[0],
+                                                  configuration.getValue("target")[0])
+        FileOperations.FileOperations.makedirs(path)
+        for res_ass in res_asses:
+            path = FileOperations.FileOperations.join(configuration.getValue("directory")[0],
+                                                      configuration.getValue("target")[0])
+            path = FileOperations.FileOperations.join(path, res_ass.name)
+            FileOperations.FileOperations.write_lines_to_file(path, res_ass.to_lines())
         print("The end")

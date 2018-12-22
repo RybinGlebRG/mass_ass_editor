@@ -1,3 +1,6 @@
+from Converter.ASS.ASS import ASS
+
+
 class Conversion:
 
     def __init__(self):
@@ -18,8 +21,10 @@ class Conversion:
         events_headers = self.example.get_events()[0]
         ass_events = []
         for event in self.srt.events.values():
-            self.example.replace_as_in_example_event("Start", event.start.replace(",", "."))
-            self.example.replace_as_in_example_event("End", event.end.replace(",", "."))
+            start = event.get_normalized_start("ASS")
+            end = event.get_normalized_end("ASS")
+            self.example.replace_as_in_example_event("Start", start)
+            self.example.replace_as_in_example_event("End", end)
             res_line = ""
             for line in event.text:
                 res_line += line + "\\N"
@@ -39,4 +44,7 @@ class Conversion:
         lines.append(events_headers)
         for line in ass_events:
             lines.append(line)
-        return lines
+        # return lines
+        ass = ASS()
+        ass.parse(lines=lines)
+        return ass
